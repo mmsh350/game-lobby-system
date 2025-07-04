@@ -2,13 +2,24 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import useSessionTimer from "../hooks/useSessionTimer";
+import Modal from "react-modal";
 
 export default function HomePage() {
   const [selectedNumber, setSelectedNumber] = useState(1);
-  // const [hideInput, setHideInput] = useState(true);
   const [leaderboard, setLeaderboard] = useState([]);
   const navigate = useNavigate();
-  const { session, timeLeft, refreshSession } = useSessionTimer();
+  const {
+    session,
+    timeLeft,
+    cooldown,
+    lastResult,
+    showResultModal,
+    winningNumber,
+    closeModal,
+    trackSelection,
+    clearResult,
+    refreshSession,
+  } = useSessionTimer();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -19,20 +30,12 @@ export default function HomePage() {
     fetchLeaderboard();
   }, [navigate]);
 
-  // useEffect(() => {
-  //   if (timeLeft === 0) {
-  //     setHideInput(true);
-  //   }
-  // }, [timeLeft]);
-
   async function fetchLeaderboard() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
         "http://localhost:8090/api/leaderboard",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setLeaderboard(response.data);
     } catch (error) {
@@ -48,10 +51,10 @@ export default function HomePage() {
         { selected_number: selectedNumber },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      trackSelection(selectedNumber);
       alert("Joined session successfully!");
       refreshSession();
       fetchLeaderboard();
-      // setHideInput(false);
     } catch (error) {
       alert(error.response?.data?.message || "Error joining session");
     }
@@ -67,30 +70,43 @@ export default function HomePage() {
 
   return (
     <div className="game-container">
-      <header>
+      <header className="game-header">
         <h2>Welcome, {user?.username}</h2>
-        <button onClick={handleLogout}>Logout</button>
+        <button className="logout-btn" onClick={handleLogout}>
+          Logout
+        </button>
       </header>
 
       <section className="game-session">
         <h3>Current Session</h3>
         {session ? (
           <>
-            <p>Time left: {timeLeft} seconds</p>
             {timeLeft > 0 ? (
-              <div className="number-selection">
-                <label>Select a number (1-10): </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="10"
-                  value={selectedNumber}
-                  onChange={(e) => setSelectedNumber(parseInt(e.target.value))}
-                />
-                <button onClick={handleJoinSession}>Join Session</button>
-              </div>
+              <>
+                <p className="session-timer">Time left: {timeLeft} seconds</p>
+                <div className="number-selector">
+                  <label>Select a number (1-10):</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="10"
+                    value={selectedNumber}
+                    onChange={(e) =>
+                      setSelectedNumber(parseInt(e.target.value))
+                    }
+                    className="number-input"
+                  />
+                  <button className="join-btn" onClick={handleJoinSession}>
+                    Join Session
+                  </button>
+                </div>
+              </>
+            ) : cooldown > 0 ? (
+              <p className="cooldown-timer">
+                New session starts in {cooldown} seconds...
+              </p>
             ) : (
-              <p>Session closed. Waiting for next session...</p>
+              <p>Session closed. Waiting for next session to start...</p>
             )}
           </>
         ) : (
@@ -100,7 +116,7 @@ export default function HomePage() {
 
       <section className="leaderboard">
         <h3>Leaderboard</h3>
-        <table>
+        <table className="leaderboard-table">
           <thead>
             <tr>
               <th>Username</th>
@@ -117,6 +133,37 @@ export default function HomePage() {
           </tbody>
         </table>
       </section>
+      <Modal
+        isOpen={showResultModal}
+        onRequestClose={closeModal}
+        contentLabel="Session Results"
+        className="modal"
+        overlayClassName="modal-overlay"
+      >
+        <div className="modal-content">
+          <h3>Session Results</h3>
+          {lastResult && (
+            <div
+              className={`result-message ${lastResult.won ? "won" : "lost"}`}
+            >
+              {lastResult.won ? (
+                <p>
+                  🎉 You won! Your number {lastResult.selectedNumber} was
+                  correct!
+                </p>
+              ) : (
+                <p>
+                  😢 You lost. You picked {lastResult.selectedNumber}, winning
+                  number was {lastResult.winningNumber}
+                </p>
+              )}
+            </div>
+          )}
+          <button onClick={closeModal} className="modal-close-btn">
+            Close
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }
