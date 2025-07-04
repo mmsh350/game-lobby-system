@@ -1,12 +1,53 @@
-# React + Vite
+## React Frontend – `README.md`
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+````markdown
+# Game Lobby Frontend (React)
 
-Currently, two official plugins are available:
+This is the React-based frontend interface for the Game Lobby system. It lets users register, log in, join a game session by selecting a number, and view live leaderboard and session results.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🔗 **Live App**:  
+[https://game-lobby-system-chi.vercel.app/auth](https://game-lobby-system-chi.vercel.app)
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Register and login
+- Join active session (once per round)
+- Timer countdown display
+- Live leaderboard
+- Session result display after expiry
+
+## Installation & Setup
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/mmsh350/game-lobby-system.git
+   cd game-lobby-system
+   ```
+
+2. Install Dependency
+
+```bash
+npm install
+```
+
+3. Set up environment variables:
+   Create a .env file and add your backend URL:
+
+   ```bash REACT_APP_API_URL=https://lobby.zepaapi.com/api
+
+   ```
+
+4. Start Development Server
+
+   ```bash
+   npm start
+
+   ```
+
+5. Backend Integration
+
+- All requests are made via Axios
+- Uses Bearer token from login API
+- Tokens and user data are stored in localStorage
+````

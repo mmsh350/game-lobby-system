@@ -14,7 +14,6 @@ export default function HomePage() {
     cooldown,
     lastResult,
     showResultModal,
-    winningNumber,
     closeModal,
     trackSelection,
     clearResult,
