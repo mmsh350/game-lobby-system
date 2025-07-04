@@ -3,10 +3,12 @@
 ```markdown
 # Game Lobby Frontend (React)
 
-This is the React-based frontend interface for the Game Lobby system. It lets users register, log in, join a game session by selecting a number, and view live leaderboard and session results.
+This is the React-based frontend interface for the Game Lobby system.
+It lets users register, log in, join a game session by selecting a number,
+and view live leaderboard and session results.
 
 **Live App**:  
-[https://game-lobby-system-chi.vercel.app](https://game-lobby-system-chi.vercel.app)
+https://game-lobby-system-chi.vercel.app
 
 ## Features
 
@@ -38,7 +40,5 @@ This is the React-based frontend interface for the Game Lobby system. It lets us
 
 5. Backend Integration
 
-- All requests are made via Axios
-- Uses Bearer token from login API
-- Tokens and user data are stored in localStorage
+All requests are made via Axios
 ```
