@@ -27,7 +27,7 @@ export default function AuthPage() {
 
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
-      navigate("/");
+      navigate("/home");
     } catch (error) {
       console.error(
         `${mode === "register" ? "Registration" : "Login"} failed:`,
