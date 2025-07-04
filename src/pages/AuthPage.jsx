@@ -22,7 +22,7 @@ export default function AuthPage() {
     try {
       const endpoint = mode === "register" ? "register" : "login";
       const response = await axios.post(
-        `http://localhost:8090/api/${endpoint}`,
+        `https://lobby.zepaapi.com/${endpoint}`,
         { username }
       );
 

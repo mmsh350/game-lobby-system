@@ -34,7 +34,7 @@ export default function HomePage() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "http://localhost:8090/api/leaderboard",
+        "https://lobby.zepaapi.com/api/leaderboard",
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setLeaderboard(response.data);
@@ -47,7 +47,7 @@ export default function HomePage() {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "http://localhost:8090/api/join-session",
+        "https://lobby.zepaapi.com/api/join-session",
         { selected_number: selectedNumber },
         { headers: { Authorization: `Bearer ${token}` } }
       );
