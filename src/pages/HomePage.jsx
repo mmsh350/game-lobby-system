@@ -30,6 +30,12 @@ export default function HomePage() {
     fetchLeaderboard();
   }, [navigate]);
 
+  useEffect(() => {
+    if (showResultModal) {
+      fetchLeaderboard();
+    }
+  }, [showResultModal]);
+
   async function fetchLeaderboard() {
     try {
       const token = localStorage.getItem("token");
