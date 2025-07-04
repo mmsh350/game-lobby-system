@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function useSessionTimer() {
   const [session, setSession] = useState(null);
   const [timeLeft, setTimeLeft] = useState(0);
@@ -16,12 +18,9 @@ export default function useSessionTimer() {
       const token = localStorage.getItem("token");
       const user = JSON.parse(localStorage.getItem("user"));
 
-      const response = await axios.get(
-        "https://lobby.zepaapi.com/api/current-session",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await axios.get("${API_URL}/current-session", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       const newSession = response.data.session;
       setSession(newSession);
@@ -32,7 +31,6 @@ export default function useSessionTimer() {
 
       setTimeLeft(timeLeft);
 
-      // Only reset cooldown if we have an active session with time left
       if (timeLeft > 0) {
         setCooldown(0);
       }
@@ -48,12 +46,10 @@ export default function useSessionTimer() {
       const token = localStorage.getItem("token");
       const user = JSON.parse(localStorage.getItem("user"));
 
-      const response = await axios.get(
-        `https://lobby.zepaapi.com/api/session-results/${sessionId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await axios.get(`${API_URL}/${sessionId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-      // Find the user's selection in the response
       const userSelection = response.data.session.selections.find(
         (sel) => sel.user_id === user.id
       );
@@ -68,7 +64,6 @@ export default function useSessionTimer() {
         });
       }
 
-      // Set winning number for modal
       setWinningNumber(response.data.session.winning_number);
       setShowResultModal(true);
     } catch (error) {
@@ -82,7 +77,6 @@ export default function useSessionTimer() {
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          // Start cooldown when session ends
           if (prev === 1 && session) {
             setCooldown(20);
             checkSessionResults(session.id);
@@ -92,10 +86,8 @@ export default function useSessionTimer() {
         return prev - 1;
       });
 
-      // Handle cooldown countdown
       setCooldown((prev) => {
         if (prev <= 1 && prev > 0) {
-          // When cooldown ends, fetch new session
           fetchCurrentSession();
           return 0;
         }

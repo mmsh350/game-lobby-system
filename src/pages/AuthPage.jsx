@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function AuthPage() {
   const [username, setUsername] = useState("");
   const [mode, setMode] = useState("login");
@@ -21,10 +23,7 @@ export default function AuthPage() {
 
     try {
       const endpoint = mode === "register" ? "register" : "login";
-      const response = await axios.post(
-        `https://lobby.zepaapi.com/api/${endpoint}`,
-        { username }
-      );
+      const response = await axios.post(`${API_URL}/${endpoint}`, { username });
 
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
