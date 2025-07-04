@@ -18,7 +18,7 @@ export default function useSessionTimer() {
       const token = localStorage.getItem("token");
       const user = JSON.parse(localStorage.getItem("user"));
 
-      const response = await axios.get("${API_URL}/current-session", {
+      const response = await axios.get(`${API_URL}/current-session`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -46,9 +46,12 @@ export default function useSessionTimer() {
       const token = localStorage.getItem("token");
       const user = JSON.parse(localStorage.getItem("user"));
 
-      const response = await axios.get(`${API_URL}/${sessionId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.get(
+        `${API_URL}/session-results/${sessionId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       const userSelection = response.data.session.selections.find(
         (sel) => sel.user_id === user.id

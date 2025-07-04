@@ -4,6 +4,8 @@ import axios from "axios";
 import useSessionTimer from "../hooks/useSessionTimer";
 import Modal from "react-modal";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function HomePage() {
   const [selectedNumber, setSelectedNumber] = useState(1);
   const [leaderboard, setLeaderboard] = useState([]);
@@ -23,7 +25,7 @@ export default function HomePage() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      navigate("/auth");
+      navigate("/");
       return;
     }
     fetchLeaderboard();
@@ -38,10 +40,9 @@ export default function HomePage() {
   async function fetchLeaderboard() {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(
-        "https://lobby.zepaapi.com/api/leaderboard",
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await axios.get(`${API_URL}/leaderboard`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setLeaderboard(response.data);
     } catch (error) {
       console.error("Error fetching leaderboard:", error);
@@ -52,7 +53,7 @@ export default function HomePage() {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "https://lobby.zepaapi.com/api/join-session",
+        `${API_URL}/join-session`,
         { selected_number: selectedNumber },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -68,7 +69,7 @@ export default function HomePage() {
   function handleLogout() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    navigate("/auth");
+    navigate("/");
   }
 
   const user = JSON.parse(localStorage.getItem("user"));
